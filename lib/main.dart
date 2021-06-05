@@ -8,12 +8,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
-      title: "AGNO HUNTER",
-      darkTheme: now.isAfter(DateTime(now.year, now.month, now.day, 19))
-          ? ThemeData.light()
-          : ThemeData.dark(),
-    );
+        debugShowCheckedModeBanner: false,
+        home: MyHomePage(),
+        title: "AGNO HUNTER",
+        theme: ThemeData?.light(),
+        darkTheme: ThemeData.dark(),
+        themeMode: now.isAfter(DateTime(now.year, now.month, now.day, 9,25))
+            ? ThemeMode.light
+            : ThemeMode.dark);
   }
 }

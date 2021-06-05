@@ -1,4 +1,24 @@
-# agno_hesap
+AGNO (Ağırlıklı Genel Not) Hesaplama Mobil Uygulaması
+ 
+Ders kredisi ve aldığınız harf notu girilerek mevcut agnonuzu kolayca hesaplayabilirsiniz...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 A new Flutter project.
 

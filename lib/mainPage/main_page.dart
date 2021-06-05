@@ -1,3 +1,4 @@
+import 'package:agno_hesap/constansts/decoration_constants.dart';
 import 'package:agno_hesap/constansts/margin_padding_constants.dart';
 import 'package:flutter/material.dart';
 import '../constansts/string_constants.dart';
@@ -38,9 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.red.shade600,
               child: Form(
                 child: Container(
-                  child: TextFormField(
-                    decoration: InputDecoration(labelText: "Ders Adını Giriniz",border: OutlineInputBorder()),
-                  ),
+                  child: getTextFormField(),
                 ),
               ),
             ),
@@ -48,5 +47,21 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
     );
+  }
+
+  TextFormField getTextFormField() {
+
+    return TextFormField(
+                  decoration: DecorationConst.dersDecoration,
+                  validator: (userValue) {
+                    if (userValue != null) {
+                      return "Boş değilmiş";
+                    } else
+                      return "Boşmuş!!";
+                  },
+                  onSaved: (savedValue){
+
+                  },
+                );
   }
 }
