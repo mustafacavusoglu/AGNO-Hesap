@@ -42,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: getTextFormField(),
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               DropdownButton<int>(
@@ -53,14 +54,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
               ),
-
-              DropdownButton<String>(items: harfNotItems(),value: harfNotu,onChanged: (harf){
-                setState(() {
-                  harfNotu = harf==null?"AA":harf;
-                });
-              },)
+              SingleChildScrollView(
+                child: DropdownButton<double>(
+                  items: harfNotItems(),
+                  value: harfDeger,
+                  onChanged: (harf) {
+                    setState(() {
+                      harfDeger = harf == null ? 4 : harf;
+                      print(harfDeger);
+                    });
+                  },
+                ),
+              )
             ],
-          )
+          ),
         ],
       ),
     );
@@ -68,7 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   TextFormField getTextFormField() {
     return TextFormField(
-      style: TextStyle(color: Colors.black,),
+      style: TextStyle(
+        color: Colors.black,
+      ),
       decoration: DecorationConst.dersDecoration,
       validator: (userValue) {
         if (userValue != null) {
@@ -93,16 +102,30 @@ class _MyHomePageState extends State<MyHomePage> {
     return items;
   }
 
-  List<DropdownMenuItem<String>> harfNotItems() {
-    List<DropdownMenuItem<String>> items = [];
-    List harfler = ["AA","BA","BB","CB","CC","DC","DD","FD","FF"];
+  List<DropdownMenuItem<double>> harfNotItems() {
+    List<DropdownMenuItem<double>> items = [];
+    List<String> harfler = [
+      "AA",
+      "BA",
+      "BB",
+      "CB",
+      "CC",
+      "DC",
+      "DD",
+      "FD",
+      "FF"
+    ];
+    List<double> harfDegerleri = [4.0, 3.5, 3.0, 2.5, 2.0, 1.5, 1.0, 0.5, 0.0];
 
-    harfler.forEach((element) {
-      items.add(DropdownMenuItem<String>(
-        value:  element,
-        child: Text("$element"),
-      ));
-    });
+    for (int i = 0; i < 9; i++) {
+      items.add(
+        DropdownMenuItem<double>(
+          child: Text("${harfler[i]}"),
+          value: harfDegerleri[i],
+        ),
+      );
+    }
+
     return items;
   }
 }

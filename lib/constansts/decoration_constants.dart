@@ -6,7 +6,7 @@ class DecorationConst {
   DecorationConst._init();
 
   static final InputDecoration dersDecoration = InputDecoration(
-      icon: Icon(Icons.bookmark_border),
+      icon: Icon(Icons.auto_stories,color: Colors.blue.shade900,),
       labelStyle: TextStyle(fontWeight: FontWeight.bold),
       labelText: "Ders Adını Giriniz",
       hintText: "Lütfen Ders Adını Giriniz...",
