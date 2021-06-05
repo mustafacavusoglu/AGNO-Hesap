@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
         title: "AGNO HUNTER",
         theme: ThemeData?.light(),
         darkTheme: ThemeData.dark(),
-        themeMode: now.isAfter(DateTime(now.year, now.month, now.day, 9,25))
+        themeMode: now.isBefore(DateTime(now.year, now.month, now.day, 19,30))
             ? ThemeMode.light
             : ThemeMode.dark);
   }
