@@ -1,4 +1,6 @@
+import 'package:agno_hesap/constansts/style_const.dart';
 import 'package:agno_hesap/constansts/decoration_constants.dart';
+import 'package:agno_hesap/constansts/lesson.dart';
 import 'package:agno_hesap/constansts/margin_padding_constants.dart';
 import 'package:flutter/material.dart';
 import '../constansts/string_constants.dart';
@@ -11,11 +13,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String dersAdi = "Matematik";
-  int dersKredi = 4;
-  double harfDeger = 4.0;
-  String harfNotu = "AA";
+  String dersAdi = "";
+  int dersKredi = 0;
+  double harfDeger = 10;
+  String harfNotu = "Seçiniz...";
   List<Ders> allLessons = [];
+
   var formKey = GlobalKey<FormState>();
   double agno = 0;
 
@@ -39,6 +42,9 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           if (formKey.currentState!.validate()) {
             formKey.currentState!.save();
+            formKey.currentState!.reset();
+            dersKredi = 0;
+            harfDeger = 10;
           }
         },
         child: Icon(Icons.add),
@@ -77,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         DropdownButton<int>(
-          items: krediItems(),
+          items: DecorationConst.krediItems(),
           value: dersKredi,
           onChanged: (secilenKredi) {
             setState(() {
@@ -85,14 +91,60 @@ class _MyHomePageState extends State<MyHomePage> {
             });
           },
         ),
-        Container(child:Text("Agnonuz: $agno"),padding: MarginPadding.padding,),
+        Container(
+          child: Text("Agnonuz: $agno"),
+          padding: MarginPadding.padding,
+        ),
         DropdownButton<double>(
-          items: harfNotItems(),
+          items: DecorationConst.harfNotItems(),
           value: harfDeger,
           onChanged: (harf) {
-            setState(() {
-              harfDeger = harf == null ? 4 : harf;
-            });
+            if (harf == 4) {
+              setState(() {
+                harfNotu = "AA";
+                harfDeger = harf == null ? 4 : harf;
+              });
+            } else if (harf == 3.5) {
+              setState(() {
+                harfNotu = "BA";
+                harfDeger = harf == null ? 4 : harf;
+              });
+            } else if (harf == 3) {
+              setState(() {
+                harfNotu = "BB";
+                harfDeger = harf == null ? 4 : harf;
+              });
+            } else if (harf == 2.5) {
+              setState(() {
+                harfNotu = "CB";
+                harfDeger = harf == null ? 4 : harf;
+              });
+            } else if (harf == 2) {
+              setState(() {
+                harfNotu = "CC";
+                harfDeger = harf == null ? 4 : harf;
+              });
+            } else if (harf == 1.5) {
+              setState(() {
+                harfNotu = "DC";
+                harfDeger = harf == null ? 4 : harf;
+              });
+            } else if (harf == 1) {
+              setState(() {
+                harfNotu = "DD";
+                harfDeger = harf == null ? 4 : harf;
+              });
+            } else if (harf == 0.5) {
+              setState(() {
+                harfNotu = "FD";
+                harfDeger = harf == null ? 4 : harf;
+              });
+            } else if (harf == 0) {
+              setState(() {
+                harfNotu = "FF";
+                harfDeger = harf == null ? 4 : harf;
+              });
+            }
           },
         )
       ],
@@ -108,76 +160,67 @@ class _MyHomePageState extends State<MyHomePage> {
       validator: (userValue) {
         if (userValue == null) {
           return null;
-        }else if(userValue.length<1){
+        } else if (userValue.length < 1) {
           return "Ders ismi boş olamaz...";
         }
       },
       onSaved: (savedValue) {
         dersAdi = savedValue.toString();
         setState(() {
-          allLessons.add(Ders(dersAdi,harfNotu,harfDeger, dersKredi));
+          allLessons.add(Ders(dersAdi, harfNotu, harfDeger, dersKredi));
+          agno = 0;
+          agno = agnoHesapla();
         });
       },
     );
   }
 
-  List<DropdownMenuItem<int>> krediItems() {
-    List<DropdownMenuItem<int>> items = [];
-
-    for (int i = 1; i < 15; i++) {
-      DropdownMenuItem<int> item = DropdownMenuItem<int>(
-        value: i,
-        child: Text("$i kredi"),
-      );
-      items.add(item);
-    }
-    return items;
-  }
-
-  List<DropdownMenuItem<double>> harfNotItems() {
-    List<DropdownMenuItem<double>> items = [];
-    List<String> harfler = [
-      "AA",
-      "BA",
-      "BB",
-      "CB",
-      "CC",
-      "DC",
-      "DD",
-      "FD",
-      "FF"
-    ];
-    List<double> harfDegerleri = [4.0, 3.5, 3.0, 2.5, 2.0, 1.5, 1.0, 0.5, 0.0];
-
-    for (int i = 0; i < 9; i++) {
-      items.add(
-        DropdownMenuItem<double>(
-          child: Text("${harfler[i]}"),
-          value: harfDegerleri[i],
-        ),
-      );
-    }
-
-    return items;
-  }
-
   Widget getLesson(BuildContext context, int index) {
     return Card(
       child: ListTile(
-        leading: Icon(Icons.account_balance_wallet_outlined),
-        title: Text(allLessons[index].dersAdi),
-        subtitle: Text(allLessons[index].kredi.toString() + " kredi"),
-        trailing: Text((allLessons[index].harfdegeri*allLessons[index].kredi.toDouble()).toString()),
+        leading: Icon(
+          Icons.account_balance_wallet_outlined,
+          color: allLessons[index].harfi == "FF" ? Colors.red : Colors.blue,
+        ),
+        title: Text(
+          allLessons[index].dersAdi,
+          style: TextStyle(
+            color: allLessons[index].harfi == "FF" ? Colors.red : Colors.blue,
+          ),
+        ),
+        subtitle: Text(
+          allLessons[index].kredi.toString() + " kredi",
+          style: TextStyle(
+            color: allLessons[index].harfi == "FF" ? Colors.red : Colors.blue,
+          ),
+        ),
+        trailing: Text(
+          allLessons[index].harfi,
+          style: TextStyle(
+            color: allLessons[index].harfi == "FF" ? Colors.red : Colors.blue,
+          ),
+        ),
       ),
     );
   }
-}
 
-class Ders {
-  String dersAdi = "";
-  String harfi = "";
-  double harfdegeri = 0.0;
-  int kredi = 1;
+  double agnoHesapla() {
+    List krediler = [];
+    List harfDegerler = [];
+    double sonuc = 0;
 
-  Ders(this.dersAdi, this.harfi,this.harfdegeri, this.kredi);
+    for (var ders in allLessons) {
+      int kredi = ders.kredi;
+      krediler.add(kredi);
+      double harfdeger = ders.harfdegeri;
+      harfDegerler.add(harfdeger);
+    }
+
+    for (int i = 0; i == krediler.length; i++) {
+      double result = krediler[i] * harfDegerler[i];
+      sonuc += result;
+    }
+
+    return sonuc;
+  }
 }
