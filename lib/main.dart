@@ -11,10 +11,11 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: MyHomePage(),
         title: "AGNO HUNTER",
-        theme: ThemeData?.light(),
-        darkTheme: ThemeData.dark(),
-        themeMode: now.isBefore(DateTime(now.year, now.month, now.day, 19,30))
-            ? ThemeMode.light
-            : ThemeMode.dark);
+        //theme: ThemeData?.light(),
+        darkTheme: ThemeData?.dark(),
+        themeMode:
+            /* now.isBefore(DateTime(now.year, now.month, now.day, 19,30))
+            ? ThemeMode.light */
+            ThemeMode.dark);
   }
 }

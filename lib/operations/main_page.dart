@@ -1,7 +1,7 @@
-import 'package:agno_hesap/constansts/style_const.dart';
 import 'package:agno_hesap/constansts/decoration_constants.dart';
-import 'package:agno_hesap/constansts/lesson.dart';
 import 'package:agno_hesap/constansts/margin_padding_constants.dart';
+import 'package:agno_hesap/constansts/style_const.dart';
+import 'package:agno_hesap/model/lesson_model.dart';
 import 'package:flutter/material.dart';
 import '../constansts/string_constants.dart';
 
@@ -14,9 +14,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String dersAdi = "";
-  int dersKredi = 0;
-  double harfDeger = 10;
-  String harfNotu = "Seçiniz...";
+  int sayac = 0;
+  int dersKredi = 4;
+  double harfDeger = 4;
+  String harfNotu = "AA";
   List<Ders> allLessons = [];
 
   var formKey = GlobalKey<FormState>();
@@ -30,50 +31,86 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    return getScaffold();
+  }
+
+  Scaffold getScaffold() {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      //resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.blueGrey,
         title: Text(AppStrings.title),
         centerTitle: true,
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blueGrey,
-        onPressed: () {
-          if (formKey.currentState!.validate()) {
-            formKey.currentState!.save();
-            formKey.currentState!.reset();
-            dersKredi = 0;
-            harfDeger = 10;
-          }
-        },
-        child: Icon(Icons.add),
-      ),
+      floatingActionButton: getFloatingActionButton(),
       body: agnoMainBody(),
+    );
+  }
+
+  FloatingActionButton getFloatingActionButton() {
+    return FloatingActionButton(
+      backgroundColor: Colors.blueGrey,
+      onPressed: () {
+        if (formKey.currentState!.validate()) {
+          formKey.currentState!.save();
+          formKey.currentState!.reset();
+          dersKredi = 4;
+          harfDeger = 4;
+          harfNotu = "AA";
+        }
+      },
+      child: Icon(Icons.add),
     );
   }
 
   Widget agnoMainBody() {
     return Container(
-      margin: MarginPadding.margin,
+      /* decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/ytumakina.jpg"),
+          fit:BoxFit.cover,
+        ),
+      ), */
+      //margin: MarginPadding.margin,
       padding: MarginPadding.padding,
-      child: Column(
-        children: [
-          Form(
-            key: formKey,
-            child: getTextFormField(),
+      child: getMainColumn(),
+    );
+  }
+
+  Column getMainColumn() {
+    return Column(
+      children: [
+        Form(
+          key: formKey,
+          child: getTextFormField(),
+        ),
+        rowWidget(),
+        Container(
+          child: Text(
+            allLessons.length > 0
+                ? "Agnonuz: ${agno.toStringAsFixed(2)}"
+                : "Agnonuz: 0",
+            style: TextStyle(fontSize: 25),
           ),
-          rowWidget(),
-          Expanded(
-            child: Container(
-              child: ListView.builder(
-                itemBuilder: getLesson,
-                itemCount: allLessons.length,
+          padding: MarginPadding.padding,
+        ),
+        Expanded(
+          child: Container(
+            child: DraggableScrollableSheet(
+              initialChildSize: 0.3,
+              minChildSize: 0.2,
+              maxChildSize: 0.9,
+              builder: (context, controller) => ClipRect(
+                child: ListView.builder(
+                  controller: controller,
+                  itemBuilder: getLesson,
+                  itemCount: allLessons.length,
+                ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -90,10 +127,6 @@ class _MyHomePageState extends State<MyHomePage> {
               dersKredi = secilenKredi == null ? 1 : secilenKredi;
             });
           },
-        ),
-        Container(
-          child: Text("Agnonuz: $agno"),
-          padding: MarginPadding.padding,
         ),
         DropdownButton<double>(
           items: DecorationConst.harfNotItems(),
@@ -154,7 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextFormField getTextFormField() {
     return TextFormField(
       style: TextStyle(
-        color: Colors.black,
+        color: Colors.white,
       ),
       decoration: DecorationConst.dersDecoration,
       validator: (userValue) {
@@ -169,58 +202,94 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           allLessons.add(Ders(dersAdi, harfNotu, harfDeger, dersKredi));
           agno = 0;
-          agno = agnoHesapla();
+          agnoHesapla();
         });
       },
     );
   }
 
   Widget getLesson(BuildContext context, int index) {
-    return Card(
-      child: ListTile(
-        leading: Icon(
-          Icons.account_balance_wallet_outlined,
-          color: allLessons[index].harfi == "FF" ? Colors.red : Colors.blue,
-        ),
-        title: Text(
-          allLessons[index].dersAdi,
-          style: TextStyle(
-            color: allLessons[index].harfi == "FF" ? Colors.red : Colors.blue,
-          ),
-        ),
-        subtitle: Text(
-          allLessons[index].kredi.toString() + " kredi",
-          style: TextStyle(
-            color: allLessons[index].harfi == "FF" ? Colors.red : Colors.blue,
-          ),
-        ),
-        trailing: Text(
-          allLessons[index].harfi,
-          style: TextStyle(
-            color: allLessons[index].harfi == "FF" ? Colors.red : Colors.blue,
-          ),
-        ),
+    return getCard(index);
+  }
+
+  Dismissible getCard(int index) {
+    sayac++;
+    return Dismissible(
+      key: Key(sayac.toString()),
+      //direction: DismissDirection.startToEnd,
+      onDismissed: (direction) {
+        setState(() {
+          allLessons.removeAt(index);
+          agnoHesapla();
+        });
+      },
+      child: Card(
+        elevation: 15,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: getListtile(index),
       ),
     );
   }
 
-  double agnoHesapla() {
-    List krediler = [];
-    List harfDegerler = [];
-    double sonuc = 0;
+  ListTile getListtile(int index) {
+    return ListTile(
+      leading: getLeading(index),
+      title: getTitle(index),
+      subtitle: getSubtitle(index),
+      trailing: getTrailing(index),
+    );
+  }
+
+  Icon getLeading(int index) {
+    return Icon(
+      Icons.account_balance_wallet_outlined,
+      color: allLessons[index].harfi == "FF" ? Colors.red : Colors.blue,
+    );
+  }
+
+  Text getTrailing(int index) {
+    return Text(
+      allLessons[index].harfi,
+      style: TextStyle(
+        color: allLessons[index].harfi == "FF" ? Colors.red : Colors.blue,
+      ),
+    );
+  }
+
+  Text getSubtitle(int index) {
+    return Text(
+      allLessons[index].kredi.toString() +
+          "  kredi \n" +
+          (allLessons[index].kredi * allLessons[index].harfdegeri).toString() +
+          " puan katkı sağlıyor",
+      style: TextStyle(
+        color: allLessons[index].harfi == "FF" ? Colors.red : Colors.blue,
+      ),
+    );
+  }
+
+  Text getTitle(int index) {
+    return Text(
+      allLessons[index].dersAdi,
+      style: TextStyle(
+        color: allLessons[index].harfi == "FF" ? Colors.red : Colors.blue,
+      ),
+    );
+  }
+
+  void agnoHesapla() {
+    int krediToplam = 0;
+    double sonucToplam = 0;
 
     for (var ders in allLessons) {
-      int kredi = ders.kredi;
-      krediler.add(kredi);
-      double harfdeger = ders.harfdegeri;
-      harfDegerler.add(harfdeger);
+      krediToplam += ders.kredi;
+      sonucToplam += ders.kredi * ders.harfdegeri;
     }
 
-    for (int i = 0; i == krediler.length; i++) {
-      double result = krediler[i] * harfDegerler[i];
-      sonuc += result;
+    if ((sonucToplam / krediToplam) == null) {
+      agno = 0;
+    } else {
+      agno = sonucToplam / krediToplam;
     }
-
-    return sonuc;
   }
 }
