@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.agno_hesap">
    <application
-        android:label="agno_hesap"
-        android:icon="@mipmap/ic_launcher">
+        android:label="AGNO"
+        android:icon="@mipmap/agno">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

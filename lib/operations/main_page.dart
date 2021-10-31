@@ -1,9 +1,8 @@
 import 'package:agno_hesap/constansts/decoration_constants.dart';
 import 'package:agno_hesap/constansts/margin_padding_constants.dart';
-import 'package:agno_hesap/constansts/style_const.dart';
+import 'package:agno_hesap/constansts/string_constants.dart';
 import 'package:agno_hesap/model/lesson_model.dart';
 import 'package:flutter/material.dart';
-import '../constansts/string_constants.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -286,7 +285,7 @@ class _MyHomePageState extends State<MyHomePage> {
       sonucToplam += ders.kredi * ders.harfdegeri;
     }
 
-    if ((sonucToplam / krediToplam) == null) {
+    if ((sonucToplam / krediToplam)==0) {
       agno = 0;
     } else {
       agno = sonucToplam / krediToplam;
